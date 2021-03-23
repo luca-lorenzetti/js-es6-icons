@@ -36,14 +36,29 @@ let convertToObject = (array) =>{
 // FUNZIONE CHE STAMPA NELLA SELECT LE OPZIONI DELLE CATEGORIE
 let printCategories = (selectFilter,categories) =>{
   categories.forEach(element => {
-    $(selectFilter).append(`<option value='${element.color}'>${element.name}</option>`)
+    $(selectFilter).append(`<option value='${element.name}'>${element.name}</option>`)
   });
 };
+
+let getColorCategory = (category,categories) =>{
+  let color = "";
+
+  categories.forEach(element => {
+    if( category.toLowerCase() == element.name.toLowerCase()){
+      color = element.color;
+    }
+  });
+
+  return color;
+};
+
 
 let iconsDiv = $('.icons');
 let selectFilter = $('#type');
 
 
+
+/* ICONS */
 const icons = [
   {
     name: 'apple-alt',
@@ -155,14 +170,6 @@ const icons = [
   },
 ];
 
-const printIcons = icons.forEach( (element)=> {
-
-  let html = `<div>
-                <i class="${element.family} ${element.prefix}${element.name}"></i>
-                <div class="title">CAT</div>
-            </div>`;
-});
-
 // Prendo tutte le categorie
 const categoriesList = [];
 
@@ -179,6 +186,19 @@ convertToObject(categoriesList);
 printCategories(selectFilter,categoriesList);
 
 
-// $(selectFilter).change(function(){
-//   console.log("Cambio");
-// });
+const printIcons = icons.forEach( (element)=> {
+
+  let html = `<div>
+                <i class="${element.family} ${element.prefix}${element.name}" style="color: ${getColorCategory(element.category,categoriesList)}"></i>
+                <div class="title">CAT</div>
+            </div>`;
+
+            $(iconsDiv).append(html);        
+});
+
+
+
+
+$( selectFilter).change(function() {
+  alert( $(this).val());
+});
