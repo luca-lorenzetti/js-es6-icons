@@ -40,6 +40,7 @@ let printCategories = (selectFilter,categories) =>{
   });
 };
 
+// FUNZIONE CHE RESTITUISCE IL COLORE DELLA CATEGORIA
 let getColorCategory = (category,categories) =>{
   let color = "";
 
@@ -52,6 +53,35 @@ let getColorCategory = (category,categories) =>{
   return color;
 };
 
+let printIcons = (icons,filter,iconsDiv) =>{
+  let html = "";
+  let iconToPrint = [];
+
+// Controllo che il filtro non sia su all
+    if( filter != ""){
+       iconToPrint =  icons.filter( (element)=> {
+        return element = element.category.toLowerCase() === filter.toLowerCase();
+      });
+      //Stampo solo le icone della categoria selezionata
+      iconToPrint.forEach(element => {
+        html += `<div>
+                    <i class="${element.family} ${element.prefix}${element.name}" style="color: ${getColorCategory(element.category,categoriesList)}"></i>
+                    <div class="title">${element.name}</div>
+               </div>`;   
+
+
+      });
+    }
+    else{// stampo tutte le icone
+      icons.forEach(element => {
+        html += `<div>
+                    <i class="${element.family} ${element.prefix}${element.name}" style="color: ${getColorCategory(element.category,categoriesList)}"></i>
+                    <div class="title">${element.name}</div>
+               </div>`;   
+      });
+    }
+    $(iconsDiv).append(html);  
+}
 
 let iconsDiv = $('.icons');
 let selectFilter = $('#type');
@@ -186,11 +216,11 @@ convertToObject(categoriesList);
 printCategories(selectFilter,categoriesList);
 
 
-const printIcons = icons.forEach( (element)=> {
+ icons.forEach( (element)=> {
 
   let html = `<div>
                 <i class="${element.family} ${element.prefix}${element.name}" style="color: ${getColorCategory(element.category,categoriesList)}"></i>
-                <div class="title">CAT</div>
+                <div class="title">${element.name}</div>
             </div>`;
 
             $(iconsDiv).append(html);        
@@ -200,5 +230,7 @@ const printIcons = icons.forEach( (element)=> {
 
 
 $( selectFilter).change(function() {
-  alert( $(this).val());
+  $(iconsDiv).html("");
+
+  printIcons(icons,$(this).val(),iconsDiv)
 });
