@@ -10,42 +10,45 @@
 // FUNCTIONS
 
 // FUNZIONE PER GENERARE UN NUMERO CASUALE
-let getNumRandom = (min,max) => Math.floor(Math.random() * (max - min + 1)) + min;
+let getNumRandom = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 // FUNZIONE PER GENERARE UN COLORE CASUALE
 let getColorRandom = () => {
-  const base = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
+  const base = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
   let color = "#";
 
   for (let i = 0; i < 6; i++) {
-    color += base[getNumRandom(0,15)]; 
+    color += base[getNumRandom(0, 15)];
   }
 
   return color;
 }
 
 // FUNZIONE RITORNA UN ARRAY DI CATEGORIE CON COLORI
-let convertToObject = (array) =>{
+let convertToObject = (array) => {
 
-  array.forEach( (element,index) => {
-    
-    array[index] = { name: element[0].toUpperCase()+element.slice(1), color: getColorRandom()}
+  array.forEach((element, index) => {
+
+    array[index] = {
+      name: element[0].toUpperCase() + element.slice(1),
+      color: getColorRandom()
+    }
   });
 }
 
 // FUNZIONE CHE STAMPA NELLA SELECT LE OPZIONI DELLE CATEGORIE
-let printCategories = (selectFilter,categories) =>{
+let printCategories = (selectFilter, categories) => {
   categories.forEach(element => {
     $(selectFilter).append(`<option value='${element.name}'>${element.name}</option>`)
   });
 };
 
 // FUNZIONE CHE RESTITUISCE IL COLORE DELLA CATEGORIA
-let getColorCategory = (category,categories) =>{
+let getColorCategory = (category, categories) => {
   let color = "";
 
   categories.forEach(element => {
-    if( category.toLowerCase() == element.name.toLowerCase()){
+    if (category.toLowerCase() == element.name.toLowerCase()) {
       color = element.color;
     }
   });
@@ -53,44 +56,42 @@ let getColorCategory = (category,categories) =>{
   return color;
 };
 
-let printIcons = (icons,filter,iconsDiv) =>{
+// FUNZIONE PER STAMPARE LE ICONE
+let printIcons = (icons, filter, iconsDiv) => {
   let html = "";
   let iconToPrint = [];
 
-// Controllo che il filtro non sia su all
-    if( filter != ""){
-       iconToPrint =  icons.filter( (element)=> {
-        return element = element.category.toLowerCase() === filter.toLowerCase();
-      });
-      //Stampo solo le icone della categoria selezionata
-      iconToPrint.forEach(element => {
-        html += `<div>
+  // Controllo che il filtro non sia su all
+  if (filter != "") {
+    iconToPrint = icons.filter((element) => {
+      return element = element.category.toLowerCase() === filter.toLowerCase();
+    });
+    //Stampo solo le icone della categoria selezionata
+    iconToPrint.forEach(element => {
+      html += `<div>
                     <i class="${element.family} ${element.prefix}${element.name}" style="color: ${getColorCategory(element.category,categoriesList)}"></i>
                     <div class="title">${element.name}</div>
-               </div>`;   
-
-
-      });
-    }
-    else{// stampo tutte le icone
-      icons.forEach(element => {
-        html += `<div>
+               </div>`;
+    });
+  }
+  // stampo tutte le icone
+  else {
+    icons.forEach(element => {
+      html += `<div>
                     <i class="${element.family} ${element.prefix}${element.name}" style="color: ${getColorCategory(element.category,categoriesList)}"></i>
                     <div class="title">${element.name}</div>
-               </div>`;   
-      });
-    }
-    $(iconsDiv).append(html);  
+               </div>`;
+    });
+  }
+  $(iconsDiv).append(html);
 }
 
 let iconsDiv = $('.icons');
 let selectFilter = $('#type');
 
 
-
 /* ICONS */
-const icons = [
-  {
+const icons = [{
     name: 'apple-alt',
     family: 'fas',
     prefix: 'fa-',
@@ -203,8 +204,8 @@ const icons = [
 // Prendo tutte le categorie
 const categoriesList = [];
 
-icons.forEach( (element) => {
-  if( !categoriesList.includes(element.category)){
+icons.forEach((element) => {
+  if (!categoriesList.includes(element.category)) {
     categoriesList.push(element.category);
   }
 });
@@ -213,24 +214,14 @@ icons.forEach( (element) => {
 convertToObject(categoriesList);
 
 //Stampo le categorie nella selection
-printCategories(selectFilter,categoriesList);
+printCategories(selectFilter, categoriesList);
 
 
- icons.forEach( (element)=> {
-
-  let html = `<div>
-                <i class="${element.family} ${element.prefix}${element.name}" style="color: ${getColorCategory(element.category,categoriesList)}"></i>
-                <div class="title">${element.name}</div>
-            </div>`;
-
-            $(iconsDiv).append(html);        
-});
+printIcons(icons, "", iconsDiv);
 
 
-
-
-$( selectFilter).change(function() {
+// Resto in ascolto al cambio di valore della selection
+$(selectFilter).change(function () {
   $(iconsDiv).html("");
-
-  printIcons(icons,$(this).val(),iconsDiv)
+  printIcons(icons, $(this).val(), iconsDiv)
 });
